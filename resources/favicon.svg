@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="Shifa Suite">
+  <!-- Teal rounded background -->
+  <rect width="32" height="32" rx="8" fill="#0E7C86"/>
+  <!-- White cross: horizontal bar -->
+  <rect x="4" y="12" width="24" height="8" rx="2" fill="white"/>
+  <!-- White cross: vertical bar -->
+  <rect x="12" y="4" width="8" height="24" rx="2" fill="white"/>
+  <!-- Coral ECG / heartbeat line -->
+  <polyline
+    points="4,16 8,16 10,13 11,16 13,16 14,7 16,25 18,16 28,16"
+    fill="none"
+    stroke="#F2994A"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>

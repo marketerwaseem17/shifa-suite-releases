@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 232 52" width="232" height="52" role="img" aria-label="Shifa Suite">
+  <!-- Icon: teal rounded square with white cross + coral ECG pulse -->
+  <g>
+    <rect x="0" y="0" width="52" height="52" rx="13" fill="#0E7C86"/>
+    <!-- Cross: horizontal bar -->
+    <rect x="6" y="20" width="40" height="12" rx="3" fill="white"/>
+    <!-- Cross: vertical bar -->
+    <rect x="20" y="6" width="12" height="40" rx="3" fill="white"/>
+    <!-- Coral ECG / heartbeat line through the horizontal bar -->
+    <polyline
+      points="6,26 13,26 15,22 16,26 19,26 21,11 23,41 26,26 46,26"
+      fill="none"
+      stroke="#F2994A"
+      stroke-width="3"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </g>
+  <!-- Wordmark -->
+  <text
+    x="64"
+    y="20"
+    font-family="'Poppins', 'Segoe UI', system-ui, sans-serif"
+    font-weight="700"
+    font-size="19"
+    fill="#0E7C86"
+    letter-spacing="-0.3"
+  >Shifa Suite</text>
+  <text
+    x="64"
+    y="37"
+    font-family="'Poppins', 'Segoe UI', system-ui, sans-serif"
+    font-weight="400"
+    font-size="10.5"
+    fill="#0E7C86"
+    opacity="0.55"
+    letter-spacing="0.2"
+  >Ilaaj aap karein, baqi hum sambhalte hain</text>
+</svg>
