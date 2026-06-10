@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shifa Suite — Complete Training Course</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #0E7C86; --primary-dark: #0a5e66; --primary-light: #e6f4f5;
+      --accent: #F2994A; --accent-dark: #d4792a;
+      --text: #1a1a1a; --muted: #6b7280; --border: #e5e7eb;
+      --bg: #f8fafb; --surface: #fff;
+      --success: #16a34a; --warning: #d97706; --error: #dc2626;
+      --sidebar: 280px;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Poppins', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+
+    /* ── Layout ── */
+    .layout { display: flex; min-height: 100vh; }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: var(--sidebar); flex-shrink: 0;
+      background: white; border-right: 1px solid var(--border);
+      position: sticky; top: 0; height: 100vh; overflow-y: auto;
+      display: flex; flex-direction: column;
+    }
+    .sidebar-header {
+      background: var(--primary); padding: 20px 16px; flex-shrink: 0;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .sidebar-header svg { flex-shrink: 0; }
+    .sidebar-header h2 { color: white; font-size: 15px; font-weight: 700; line-height: 1.3; }
+    .sidebar-header p { color: rgba(255,255,255,.65); font-size: 11px; margin-top: 2px; }
+    .progress-bar { height: 4px; background: rgba(255,255,255,.2); margin: 0 16px 0; }
+    .progress-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width .4s; }
+    .progress-label { padding: 6px 16px 12px; font-size: 11px; color: rgba(255,255,255,.6); background: var(--primary); }
+    .nav-list { flex: 1; padding: 8px 0; }
+    .nav-chapter { padding: 6px 16px 2px; font-size: 10px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--muted); margin-top: 8px; }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 16px; font-size: 13px; color: #444;
+      text-decoration: none; cursor: pointer; border: none; background: none; width: 100%; text-align: left;
+      font-family: inherit; transition: background .15s, color .15s;
+    }
+    .nav-item:hover { background: var(--primary-light); color: var(--primary); }
+    .nav-item.active { background: var(--primary-light); color: var(--primary); font-weight: 600; }
+    .nav-item.done .check { background: var(--success); color: white; }
+    .check {
+      width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0;
+      border: 2px solid var(--border); display: flex; align-items: center; justify-content: center;
+      font-size: 10px; transition: all .2s;
+    }
+    .nav-item.active .check { border-color: var(--primary); }
+    .nav-num { font-size: 10px; color: var(--muted); margin-left: auto; font-weight: 500; }
+
+    /* ── Main ── */
+    main { flex: 1; max-width: 800px; padding: 0; }
+
+    /* ── Top bar ── */
+    .topbar {
+      background: white; border-bottom: 1px solid var(--border);
+      padding: 14px 40px; display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 10;
+    }
+    .topbar-left { font-size: 14px; color: var(--muted); }
+    .topbar-left strong { color: var(--text); }
+    .btn-mark {
+      background: var(--primary); color: white; border: none;
+      border-radius: 8px; padding: 8px 16px; font-size: 13px; font-weight: 600;
+      cursor: pointer; font-family: inherit; display: flex; align-items: center; gap: 6px;
+      transition: background .15s;
+    }
+    .btn-mark:hover { background: var(--primary-dark); }
+    .btn-mark.done-btn { background: var(--success); }
+
+    /* ── Lesson ── */
+    .lesson { padding: 40px; display: none; }
+    .lesson.active { display: block; }
+
+    .lesson-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--primary-light); color: var(--primary);
+      font-size: 11px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase;
+      padding: 4px 12px; border-radius: 50px; margin-bottom: 14px;
+    }
+    .lesson h1 { font-size: 28px; font-weight: 800; color: var(--text); line-height: 1.2; margin-bottom: 8px; }
+    .lesson .subtitle { font-size: 16px; color: var(--muted); margin-bottom: 28px; line-height: 1.6; }
+
+    .lesson h2 { font-size: 19px; font-weight: 700; color: var(--text); margin: 32px 0 12px; padding-bottom: 8px; border-bottom: 2px solid var(--primary-light); }
+    .lesson h3 { font-size: 16px; font-weight: 700; color: var(--primary); margin: 24px 0 8px; }
+    .lesson p  { margin-bottom: 12px; font-size: 15px; line-height: 1.75; }
+    .lesson ul, .lesson ol { margin: 8px 0 16px 20px; }
+    .lesson li { font-size: 15px; line-height: 1.75; margin-bottom: 4px; }
+
+    /* Step cards */
+    .steps { display: flex; flex-direction: column; gap: 12px; margin: 16px 0; }
+    .step {
+      display: flex; gap: 16px; align-items: flex-start;
+      background: white; border: 1.5px solid var(--border); border-radius: 12px; padding: 16px;
+    }
+    .step-num {
+      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+      background: var(--primary); color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 14px;
+    }
+    .step-body { flex: 1; }
+    .step-body strong { display: block; font-size: 15px; margin-bottom: 4px; }
+    .step-body p { font-size: 14px; color: #444; margin: 0; line-height: 1.6; }
+
+    /* Callout boxes */
+    .callout {
+      border-radius: 10px; padding: 14px 16px; margin: 16px 0;
+      font-size: 14px; line-height: 1.65; display: flex; gap: 12px; align-items: flex-start;
+    }
+    .callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .callout.tip     { background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d; }
+    .callout.warning { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; }
+    .callout.info    { background: var(--primary-light); border: 1px solid #b2d8db; color: #0a5e66; }
+    .callout.urdu    { background: #fff8f0; border: 1px solid #fed7aa; color: #9a3412; font-style: italic; }
+
+    /* Screenshot placeholder */
+    .screen-mock {
+      background: #f1f5f9; border: 2px solid var(--border); border-radius: 12px;
+      padding: 20px; margin: 16px 0; text-align: center;
+      font-size: 13px; color: var(--muted);
+    }
+    .screen-mock .screen-title {
+      background: var(--primary); color: white; border-radius: 8px 8px 0 0;
+      padding: 8px 14px; font-size: 13px; font-weight: 600; margin: -20px -20px 16px; text-align: left;
+    }
+    .screen-mock .field-row {
+      display: flex; gap: 10px; margin-bottom: 10px;
+    }
+    .screen-mock .field-box {
+      flex: 1; background: white; border: 1px solid var(--border); border-radius: 6px;
+      padding: 8px 10px; font-size: 12px; color: #888; text-align: left;
+    }
+    .screen-mock .btn-mock {
+      background: var(--primary); color: white; border-radius: 6px;
+      padding: 8px 16px; font-size: 12px; font-weight: 600; display: inline-block; margin-top: 4px;
+    }
+
+    /* Table */
+    .data-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+    .data-table th { background: var(--primary-light); color: var(--primary); font-weight: 700; padding: 10px 12px; text-align: left; }
+    .data-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+    .data-table tr:last-child td { border-bottom: none; }
+
+    /* Navigation buttons */
+    .lesson-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border); }
+    .btn-nav {
+      display: flex; align-items: center; gap: 8px;
+      background: white; border: 2px solid var(--border); color: var(--text);
+      border-radius: 10px; padding: 10px 20px; font-size: 14px; font-weight: 600;
+      cursor: pointer; font-family: inherit; text-decoration: none; transition: all .15s;
+    }
+    .btn-nav:hover { border-color: var(--primary); color: var(--primary); }
+    .btn-nav.next { background: var(--primary); color: white; border-color: var(--primary); }
+    .btn-nav.next:hover { background: var(--primary-dark); }
+
+    /* Mobile menu */
+    .mobile-menu-btn {
+      display: none; background: var(--primary); color: white; border: none;
+      border-radius: 8px; padding: 8px 12px; cursor: pointer; font-size: 20px;
+    }
+    .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 49; }
+
+    /* Completion screen */
+    #done-screen { padding: 40px; display: none; text-align: center; }
+    #done-screen.active { display: block; }
+
+    @media (max-width: 768px) {
+      .sidebar { position: fixed; left: -100%; top: 0; z-index: 50; transition: left .3s; }
+      .sidebar.open { left: 0; }
+      .sidebar-overlay.open { display: block; }
+      .mobile-menu-btn { display: block; }
+      .topbar { padding: 12px 16px; }
+      .lesson { padding: 20px 16px; }
+      .lesson h1 { font-size: 22px; }
+      main { width: 100%; }
+    }
+
+    @media print {
+      .sidebar, .topbar, .lesson-nav, .btn-mark { display: none !important; }
+      .lesson { display: block !important; padding: 20px; }
+      main { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="layout">
+
+<!-- ═══ SIDEBAR ═══ -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <svg width="36" height="36" viewBox="0 0 52 52">
+      <rect width="52" height="52" rx="13" fill="rgba(255,255,255,.2)"/>
+      <rect x="6" y="20" width="40" height="12" rx="3" fill="white"/>
+      <rect x="20" y="6" width="12" height="40" rx="3" fill="white"/>
+      <polyline points="6,26 13,26 15,22 16,26 19,26 21,11 23,41 26,26 46,26" fill="none" stroke="#F2994A" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+    <div>
+      <h2>Shifa Suite</h2>
+      <p>Complete Training Course</p>
+    </div>
+  </div>
+  <div style="background:var(--primary); padding: 8px 16px 12px;">
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    <div class="progress-label" id="progress-label">0 of 13 lessons done</div>
+  </div>
+  <div class="nav-list" id="nav-list"></div>
+</nav>
+
+<div class="sidebar-overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<!-- ═══ MAIN ═══ -->
+<main>
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button class="mobile-menu-btn" onclick="openSidebar()">☰</button>
+      <span class="topbar-left"><strong id="current-title">Welcome</strong></span>
+    </div>
+    <button class="btn-mark" id="mark-btn" onclick="markDone()">
+      ✓ Mark as Done
+    </button>
+  </div>
+
+  <!-- ═══════════════ LESSONS ═══════════════ -->
+
+  <!-- 0: Welcome -->
+  <div class="lesson active" id="lesson-0">
+    <div class="lesson-badge">🎓 Course Introduction</div>
+    <h1>Shifa Suite mein Khush Amdeed!</h1>
+    <p class="subtitle">Yeh course aapko Shifa Suite ka poora master bana dega — patients se le kar billing tak, sab kuch step-by-step seekhein.</p>
+    <div class="callout urdu">
+      <span class="callout-icon">🌟</span>
+      <div><strong>"Ilaaj aap karein, baqi hum sambhalte hain"</strong><br/>Shifa Suite aapki clinic ko digital bana deta hai — bina internet ke, bina complexity ke.</div>
+    </div>
+    <h2>Is Course Mein Kya Seekhein Gay?</h2>
+    <table class="data-table">
+      <thead><tr><th>#</th><th>Module</th><th>Aap Seekhein Gay</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Installation</td><td>Software install karna, license activate karna</td></tr>
+        <tr><td>2</td><td>Clinic Setup</td><td>Pehli dafa clinic ki details daalna</td></tr>
+        <tr><td>3</td><td>Patients</td><td>Patients add karna, records dekhna</td></tr>
+        <tr><td>4</td><td>Appointments</td><td>Schedule banana, queue manage karna</td></tr>
+        <tr><td>5</td><td>Billing</td><td>Invoices banana, payments record karna</td></tr>
+        <tr><td>6</td><td>Prescriptions</td><td>Digital nuskhe likhna, print karna</td></tr>
+        <tr><td>7</td><td>Lab Orders</td><td>Tests order karna, results save karna</td></tr>
+        <tr><td>8</td><td>Inventory</td><td>Medicines ka stock manage karna</td></tr>
+        <tr><td>9</td><td>WhatsApp</td><td>Patients ko reminders bhejna</td></tr>
+        <tr><td>10</td><td>Reports</td><td>Revenue aur clinic performance dekhna</td></tr>
+        <tr><td>11</td><td>Backup</td><td>Data ka backup lena, restore karna</td></tr>
+        <tr><td>12</td><td>Mobile App</td><td>Android pe Shifa Suite use karna</td></tr>
+        <tr><td>13</td><td>License</td><td>License activate aur renew karna</td></tr>
+      </tbody>
+    </table>
+    <div class="callout info">
+      <span class="callout-icon">💡</span>
+      <div><strong>Tip:</strong> Har lesson ke baad "Mark as Done" button dabayein. Aapki progress save hoti rahegi, agle dafa jab kholein to wahan se shuru karein jahan chhora tha.</div>
+    </div>
+    <div class="lesson-nav">
+      <span></span>
+      <button class="btn-nav next" onclick="goTo(1)">Start Course →</button>
+    </div>
+  </div>
+
+  <!-- 1: Installation -->
+  <div class="lesson" id="lesson-1">
+    <div class="lesson-badge">📦 Lesson 1</div>
+    <h1>Installation & First Launch</h1>
+    <p class="subtitle">Software install karna aur pehli dafa kholna — sirf 3 minute lagenge.</p>
+
+    <h2>Requirements</h2>
+    <table class="data-table">
+      <tr><td>💻 Operating System</td><td>Windows 7, 8, 10, 11 (64-bit)</td></tr>
+      <tr><td>🖥️ RAM</td><td>Minimum 2 GB (4 GB recommended)</td></tr>
+      <tr><td>💾 Storage</td><td>500 MB free space</td></tr>
+      <tr><td>🌐 Internet</td><td>Sirf download ke liye — baad mein zarurat nahi</td></tr>
+    </table>
+
+    <h2>Installation Steps</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body"><strong>Setup file download karein</strong><p>Google Drive link ya apna diya gaya link khol kar <code>Shifa-Suite-Setup-1.0.0.exe</code> download karein.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body"><strong>Setup file chalayein</strong><p>Downloaded file pe double click karein. Agar Windows "Unknown publisher" warning dikhaaye to <strong>Run Anyway</strong> click karein.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body"><strong>Install folder choose karein</strong><p>Default folder theek hai (<code>C:\Program Files\Shifa Suite</code>). Next → Install click karein.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body"><strong>Installation complete</strong><p>"Launch Shifa Suite" checked rakhein aur Finish click karein. App khul jayegi.</p></div>
+      </div>
+    </div>
+
+    <div class="callout warning">
+      <span class="callout-icon">⚠️</span>
+      <div><strong>Windows Defender:</strong> Kabhi kabhi antivirus new software ko block karta hai. Agar aisa ho to Start Menu → Windows Security → Virus & threat protection → aur Shifa Suite ko allow karein. Ya directly WhatsApp karein: 03109888092</div>
+    </div>
+
+    <h2>First Launch</h2>
+    <p>App pehli dafa kholein to aap dekhein gay:</p>
+    <ul>
+      <li>🎁 <strong>7-day free trial</strong> automatically shuru ho jata hai — koi key nahi chahiye</li>
+      <li>Sidebar mein "Free trial — X days left" dikhega</li>
+      <li>Setup wizard shuru hoga jahan aap clinic ki details daal sakte hain</li>
+    </ul>
+
+    <div class="callout tip">
+      <span class="callout-icon">✅</span>
+      <div><strong>Desktop shortcut:</strong> Installation ke baad desktop pe "Shifa Suite" shortcut bana jata hai. Double click karein to open karein.</div>
+    </div>
+
+    <div class="lesson-nav">
+      <button class="btn-nav" onclick="goTo(0)">← Previous</button>
+      <button class="btn-nav next" onclick="goTo(2)">Next: Clinic Setup →</button>
+    </div>
+  </div>
+
+  <!-- 2: Clinic Setup -->
+  <div class="lesson" id="lesson-2">
+    <div class="lesson-badge">🏥 Lesson 2</div>
+    <h1>Clinic Setup (Onboarding Wizard)</h1>
+    <p class="subtitle">Pehli dafa clinic ki poori information daalna — yeh ek dafa ka kaam hai.</p>
+
+    <div class="callout info">
+      <span class="callout-icon">ℹ️</span>
+      <div>Jab pehli dafa Shifa Suite kholein, ek <strong>Setup Wizard</strong> automatically shuru hota hai. Yeh 5 steps mein aapki clinic ko configure karta hai.</div>
+    </div>
+
+    <h2>Step 1 — Clinic Ka Naam</h2>
+    <div class="screen-mock">
+      <div class="screen-title">🏥 Clinic Information</div>
+      <div class="field-row">
+        <div class="field-box">Clinic Name: <span style="color:#0E7C86">Al-Shifa Medical Center</span></div>
+      </div>
+      <div class="field-row">
+        <div class="field-box">Tagline: <span style="color:#888">Aapki sehat, hamari zimmedari</span></div>
+      </div>
+      <div class="field-row">
+        <div class="field-box">Address: <span style="color:#888">Main Bazar, Peshawar</span></div>
+      </div>
+      <div class="field-row">
+        <div class="field-box">Phone: <span style="color:#888">091-XXXXXXX</span></div>
+        <div class="field-box">WhatsApp: <span style="color:#888">0310XXXXXXX</span></div>
+      </div>
+    </div>
+    <ul>
+      <li><strong>Clinic Name:</strong> Yeh invoices aur prescriptions pe print hoga</li>
+      <li><strong>Tagline:</strong> Optional — ek short slogan</li>
+      <li><strong>Registration No:</strong> Agar ho to daal dein (PDF footer mein aata hai)</li>
+    </ul>
+
+    <h2>Step 2 — Doctor/Staff Information</h2>
+    <p>Apna naam aur qualification daalen. Ek se zyada doctor hai to "Add Another Doctor" se add karein.</p>
+    <ul>
+      <li>Full Name: Dr. Ali Raza</li>
+      <li>Qualification: MBBS, FCPS</li>
+      <li>Specialization: General Physician</li>
+    </ul>
+
+    <h2>Step 3 — Working Hours</h2>
+    <p>Apne clinic ke din aur hours set karein — yeh appointments mein show honge.</p>
+
+    <h2>Step 4 — Clinic Logo (Optional)</h2>
+    <p>Agar aapke paas clinic ka logo PNG/JPG format mein hai to upload karein. Yeh invoices pe print hoga. Agar nahi hai to skip karein.</p>
+    <div class="callout tip">
+      <span class="callout-icon">✅</span>
+      <div>Best size: <strong>500×500 pixels</strong>, PNG format with transparent background. Agar nahi hai to bilkul theek hai — Shifa Suite ka professional layout bina logo ke bhi acha dikhta hai.</div>
+    </div>
+
+    <h2>Step 5 — Review aur Save</h2>
+    <p>Sab information check karein aur <strong>"Finish Setup"</strong> button dabayein. Bas — aapki clinic configure ho gayi!</p>
+
+    <div class="callout info">
+      <span class="callout-icon">✏️</span>
+      <div>Yeh details baad mein <strong>Settings → Clinic Profile</strong> mein jaa kar change kar sakte hain.</div>
+    </div>
+
+    <div class="lesson-nav">
+      <button class="btn-nav" onclick="goTo(1)">← Previous</button>
+      <button class="btn-nav next" onclick="goTo(3)">Next: Patients →</button>
+    </div>
+  </div>
+
+  <!-- 3: Patients -->
+  <div class="lesson" id="lesson-3">
+    <div class="lesson-badge">👥 Lesson 3</div>
+    <h1>Patient Management</h1>
+    <p class="subtitle">Har patient ka poora record ek jagah — naam, phone, history, sab kuch.</p>
+
+    <h2>New Patient Kaise Add Karein?</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body"><strong>Patients module kholein</strong><p>Left sidebar mein "Patients" icon pe click karein.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body"><strong>"New Patient" button dabayein</strong><p>Top right mein teal color ka button hai.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body"><strong>Details bharein</strong><p>Naam, phone, gender, date of birth — jo information available ho wo daal dein. Sab optional hai siwaay naam ke.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body"><strong>Save karein</strong><p>"Save Patient" button dabayein. Patient ID automatically generate ho jata hai (e.g. P-0001).</p></div>
+      </div>
+    </div>
+
+    <h2>Patient Fields Guide</h2>
+    <table class="data-table">
+      <thead><tr><th>Field</th><th>Description</th><th>Zaruri?</th></tr></thead>
+      <tbody>
+        <tr><td>Full Name</td><td>Patient ka poora naam</td><td>✅ Haan</td></tr>
+        <tr><td>Phone</td><td>Mobile number (WhatsApp reminders ke liye)</td><td>⭐ Recommended</td></tr>
+        <tr><td>Gender</td><td>Male / Female / Other</td><td>Optional</td></tr>
+        <tr><td>Date of Birth</td><td>Age calculate hoti hai</td><td>Optional</td></tr>
+        <tr><td>Blood Group</td><td>Medical record ke liye</td><td>Optional</td></tr>
+        <tr><td>Address</td><td>City / Mohalla</td><td>Optional</td></tr>
+        <tr><td>Emergency Contact</td><td>Relative ka number</td><td>Optional</td></tr>
+        <tr><td>Medical History</td><td>Known allergies, chronic diseases</td><td>Optional</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Patient Search Karna</h2>
+    <p>Search bar mein naam, phone number ya patient code type karein — instantly results aate hain.</p>
+    <div class="callout tip">
+      <span class="callout-icon">💡</span>
+      <div>Patient code se search karna sabse fast hai. Har patient ka unique code hota hai jaise <strong>P-0042</strong>.</div>
+    </div>
+
+    <h2>Patient Profile Dekhna</h2>
+    <p>Kisi bhi patient ke naam pe click karein to uska poora profile khulega jisme:</p>
+    <ul>
+      <li>📋 Poori visit history</li>
+      <li>💊 Prescription history</li>
+      <li>🧪 Lab test records</li>
+      <li>💰 Billing aur payments</li>
+      <li>📅 Aane wale appointments</li>
+    </ul>
+
+    <div class="callout urdu">
+      <span class="callout-icon">🌟</span>
+      <div><strong>Professional Tip:</strong> Patient ki photo bhi add kar sakte hain — khas tor par mufeed tab jab ek hi naam ke kai patients hon.</div>
+    </div>
+
+    <div class="lesson-nav">
+      <button class="btn-nav" onclick="goTo(2)">← Previous</button>
+      <button class="btn-nav next" onclick="goTo(4)">Next: Appointments →</button>
+    </div>
+  </div>
+
+  <!-- 4: Appointments -->
+  <div class="lesson" id="lesson-4">
+    <div class="lesson-badge">📅 Lesson 4</div>
+    <h1>Appointments & Scheduling</h1>
+    <p class="subtitle">Aaj ki queue, appointments, aur patient ka schedule — sab organized rakhein.</p>
+
+    <h2>New Appointment Banana</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body"><strong>Appointments module kholein</strong><p>Sidebar mein Calendar icon pe click karein.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body"><strong>"New Appointment" dabayein</strong><p>Ya seedha patient ki profile se bhi appointment book ho sakti hai.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body"><strong>Patient select karein</strong><p>Search box mein naam type karein. Agar naya patient hai to "Walk-in" option bhi hai.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body"><strong>Date, time aur type set karein</strong><p>Consultation / Follow-up / Procedure / Emergency — jo bhi ho wo choose karein.</p></div>
+      </div>
+    </div>
+
+    <h2>Appointment Status Update Karna</h2>
+    <p>Appointment card pe click karein aur status change karein:</p>
+    <table class="data-table">
+      <thead><tr><th>Status</th><th>Matlab</th><th>Color</th></tr></thead>
+      <tbody>
+        <tr><td>Scheduled</td><td>Appointment book hai, aa nahi aya</td><td>🔵 Blue</td></tr>
+        <tr><td>Done ✓</td><td>Patient aa gaya, dekh liya</td><td>🟢 Green</td></tr>
+        <tr><td>Cancelled</td><td>Patient ne cancel kiya</td><td>🔴 Red</td></tr>
+        <tr><td>No Show</td><td>Appointment thi lekin nahi aya</td><td>🟡 Yellow</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Today's Queue</h2>
+    <p>Dashboard pe aaj ke appointments ki list hoti hai with numbers. Jaise hi patient aaye, status "Done" kar dein — agla patient queue mein visible ho jata hai.</p>
+
+    <div class="callout tip">
+      <span class="callout-icon">✅</span>
+      <div><strong>Quick tip:</strong> Appointment list mein patient ke naam pe right-click karein for quick actions — directly WhatsApp message bhejna, invoice banana, ya prescription likhna.</div>
+    </div>
+
+    <h2>Appointment History</h2>
+    <p>Pichle dates ki appointments dekhne ke liye calendar mein wo date click karein. Saare past appointments save rehte hain.</p>
+
+    <div class="lesson-nav">
+      <button class="btn-nav" onclick="goTo(3)">← Previous</button>
+      <button class="btn-nav next" onclick="goTo(5)">Next: Billing →</button>
+    </div>
+  </div>
+
+  <!-- 5: Billing -->
+  <div class="lesson" id="lesson-5">
+    <div class="lesson-badge">💰 Lesson 5</div>
+    <h1>Billing & Invoicing</h1>
+    <p class="subtitle">Professional invoices banana, payments record karna, aur outstanding dues track karna.</p>
+
+    <h2>New Invoice Banana</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body"><strong>Billing module kholein</strong><p>Sidebar mein Receipt icon pe click karein.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body"><strong>"New Invoice" dabayein</strong></div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body"><strong>Patient select karein</strong><p>Naam type karein search mein, ya Walk-in patient ke liye blank chhod dein.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body"><strong>Items add karein</strong><p>"Add Item" pe click karein — description, quantity, rate likhen. Multiple items add ho sakti hain.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body"><strong>Discount ya tax (optional)</strong><p>Agar koi discount deni hai ya tax lagana hai to fields fill karein.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">6</div>
+        <div class="step-body"><strong>Payment record karein</strong><p>Patient ne kitna pay kiya — Cash / Card / Online transfer — enter karein. Baki amount "Due" mein show hoti hai.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">7</div>
+        <div class="step-body"><strong>Save aur Print/PDF</strong><p>"Save Invoice" dabayein, phir "Generate PDF" se professional invoice save hoti hai.</p></div>
+      </div>
+    </div>
+
+    <h2>Invoice Status</h2>
+    <table class="data-table">
+      <thead><tr><th>Status</th><th>Matlab</th></tr></thead>
+      <tbody>
+        <tr><td>🟡 Unpaid</td><td>Koi payment nahi ki</td></tr>
+        <tr><td>🟠 Partial</td><td>Kuch payment ki, baki baqi</td></tr>
+        <tr><td>🟢 Paid</td><td>Poora payment ho gaya</td></tr>
+        <tr><td>⚪ Draft</td><td>Save nahi kiya abhi</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Partial Payment Record Karna</h2>
+    <p>Agar patient ne pura paisa nahi diya:</p>
+    <ul>
+      <li>Invoice mein "Amount Paid" field mein jo diya wo daalen</li>
+      <li>Remaining "Due Amount" automatically calculate ho jata hai</li>
+      <li>Baad mein payment aane pe invoice kholein → "Record Payment" dabayein</li>
+    </ul>
+
+    <h2>Outstanding Dues</h2>
+    <p>Reports section mein jaayein — wahan sare patients ki outstanding dues ki list milegi sorted by amount.</p>
+
+    <div class="callout urdu">
+      <span class="callout-icon">💡</span>
+      <div><strong>PDF Invoice:</strong> Jab PDF generate karein to aapki clinic ka naam, logo, doctor ki details, aur footer mein "Generated by Shifa Suite · Support: wa.me/923109888092" automatically aa jata hai.</div>
+    </div>
+
+    <div class="lesson-nav">
+      <button class="btn-nav" onclick="goTo(4)">← Previous</button>
+      <button class="btn-nav next" onclick="goTo(6)">Next: Prescriptions →</button>
+    </div>
+  </div>
+
+  <!-- 6: Prescriptions -->
+  <div class="lesson" id="lesson-6">
+    <div class="lesson-badge">💊 Lesson 6</div>
+    <h1>E-Prescriptions (Digital Nuskhe)</h1>
+    <p class="subtitle">Haath se likhne ki zarurat nahi — digital prescription banayein, print karein ya PDF save karein.</p>
+
+    <h2>New Prescription Likhna</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body"><strong>Prescriptions module kholein</strong><p>Sidebar mein Pill icon pe click karein.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body"><strong>"New Prescription" dabayein</strong></div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body"><strong>Patient select karein</strong><p>Existing patient choose karein ya walk-in ke liye naam type karein.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body"><strong>Diagnosis likhen</strong><p>"Diagnosis" field mein patient ki condition enter karein, jaise "Acute Pharyngitis".</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body"><strong>Medicines add karein</strong><p>"Add Medicine" pe click karein. Drug name type karein — built-in database se suggestions aate hain. Dosage, frequency, aur duration set karein.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">6</div>
+        <div class="step-body"><strong>Advice aur follow-up add karein</strong><p>"General Advice" mein rest, diet etc. likh sakte hain. Follow-up date set karein.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">7</div>
+        <div class="step-body"><strong>Save aur PDF generate karein</strong><p>Save ke baad "Generate PDF" se professional prescription tayar hoti hai with ℞ symbol, clinic letterhead, aur doctor signature line.</p></div>
+      </div>
+    </div>
+
+    <h2>Prescription Mein Drug Database</h2>
+    <p>Shifa Suite mein 500+ commonly used medicines ka database built-in hai. Medicine ka naam type karte hi suggestions aate hain with standard doses.</p>
+    <div class="callout tip">
+      <span class="callout-icon">💊</span>
+      <div>Agar koi medicine list mein nahi hai to direct name type karein — manual entry bhi ho jati hai. Frequency examples: "1-0-1", "1-1-1", "0-0-1", "PRN (as needed)"</div>
+    </div>
+
+    <h2>Prescription History</h2>
+    <p>Patient ki profile mein jaa kar us ki poori prescription history dekhi ja sakti hai with dates.</p>
+
+    <div class="lesson-nav">
+      <button class="btn-nav" onclick="goTo(5)">← Previous</button>
+      <button class="btn-nav next" onclick="goTo(7)">Next: Lab Orders →</button>
+    </div>
+  </div>
+
+  <!-- 7: Lab -->
+  <div class="lesson" id="lesson-7">
+    <div class="lesson-badge">🧪 Lesson 7</div>
+    <h1>Lab & Diagnostics</h1>
+    <p class="subtitle">Lab tests order karna, results save karna, aur patient ke saath link karna.</p>
+
+    <h2>New Lab Order Banana</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body"><strong>Lab module kholein</strong><p>Sidebar mein Flask icon pe click karein.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body"><strong>"New Lab Order" dabayein</strong></div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body"><strong>Patient aur tests select karein</strong><p>Tests ka naam type karein — CBC, LFTs, RFTs, Blood Sugar, Urine RE/ME, etc.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body"><strong>Lab ka naam likhen</strong><p>Kaunsi lab pe bheja — Citi Lab, Chughtai Lab, etc.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body"><strong>Results wapas aane pe attach karein</strong><p>Lab order mein "Attach Result" se PDF ya image file attach ho jati hai.</p></div>
+      </div>
+    </div>
+
+    <h2>Lab Order Status Track Karna</h2>
+    <table class="data-table">
+      <thead><tr><th>Status</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr><td>🟡 Pending</td><td>Tests ordered, results aane hain</td></tr>
+        <tr><td>🟢 Received</td><td>Results aa gaye, attach karein</td></tr>
+        <tr><td>✅ Reviewed</td><td>Doctor ne dekh liya</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout info">
+      <span class="callout-icon">📎</span>
+      <div>Lab results PDF ya photo (JPG/PNG) — dono attach ho sakti hain. Patient ki profile mein "Lab" tab mein sab records milenge.</div>
+    </div>
+
+    <div class="lesson-nav">
+      <button class="btn-nav" onclick="goTo(6)">← Previous</button>
+      <button class="btn-nav next" onclick="goTo(8)">Next: Inventory →</button>
+    </div>
+  </div>
+
+  <!-- 8: Inventory -->
+  <div class="lesson" id="lesson-8">
+    <div class="lesson-badge">📦 Lesson 8</div>
+    <h1>Inventory Management</h1>
+    <p class="subtitle">Clinic mein medicines aur supplies ka stock track karna — expire hone se pehle alert milega.</p>
+
+    <h2>New Item Add Karna</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body"><strong>Inventory module kholein</strong><p>Sidebar mein Box icon pe click karein.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body"><strong>"Add Item" dabayein</strong></div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body"><strong>Item details bharein</strong><p>Name, category (Medicine/Equipment/Supply), unit (tablets/strips/bottles), current stock, minimum stock, purchase price, sale price.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body"><strong>Expiry date daalen</strong><p>Medicine ki expiry date zaroor daalen — alert aayega pehle.</p></div>
+      </div>
+    </div>
+
+    <h2>Stock Update Karna (Stock In/Out)</h2>
+    <p>Jab naya stock aaye ya use ho:</p>
+    <ul>
+      <li>Item pe click karein</li>
+      <li><strong>"Adjust Stock"</strong> dabayein</li>
+      <li>Type: <strong>Stock In</strong> (purchase) ya <strong>Stock Out</strong> (use/sale)</li>
+      <li>Quantity aur reason enter karein</li>
+    </ul>
+
+    <h2>Supplier Management</h2>
+    <p>Suppliers tab mein apne medicine suppliers add karein with contact details. Purchase orders bhi track ho sakti hain.</p>
+
+    <h2>Alerts</h2>
+    <div class="callout warning">
+      <span class="callout-icon">⚠️</span>
+      <div>
+        <strong>Low Stock Alert:</strong> Jab stock minimum level se neeche aaye to dashboard pe red alert aata hai.<br/>
+        <strong>Expiry Alert:</strong> 30 din mein expire hone wali medicines yellow mein highlight hoti hain.
+      </div>
+    </div>
+
+    <div class="lesson-nav">
+      <button class="btn-nav" onclick="goTo(7)">← Previous</button>
+      <button class="btn-nav next" onclick="goTo(9)">Next: WhatsApp →</button>
+    </div>
+  </div>
+
+  <!-- 9: WhatsApp -->
+  <div class="lesson" id="lesson-9">
+    <div class="lesson-badge">📱 Lesson 9</div>
+    <h1>WhatsApp Reminders</h1>
+    <p class="subtitle">Patients ko appointment reminders bhejna — bilkul free, koi API key nahi chahiye.</p>
+
+    <div class="callout info">
+      <span class="callout-icon">ℹ️</span>
+      <div>Shifa Suite ka WhatsApp feature <strong>wa.me links</strong> use karta hai — aapka WhatsApp apne aap khulta hai pre-filled message ke saath. Ek click mein send.</div>
+    </div>
+
+    <h2>Reminder Kaise Bhejna</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body"><strong>Communication module kholein</strong><p>Sidebar mein Message icon pe click karein.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body"><strong>Patient select karein</strong><p>Kisi bhi patient ko select karein jiske paas reminder bhejna hai.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body"><strong>Template select karein</strong><p>Appointment Reminder / Follow-up / Payment Reminder — jo chahiye choose karein.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body"><strong>Preview check karein aur send karein</strong><p>"Send on WhatsApp" dabayein — WhatsApp khulega aur message ready milega. Sirf send button dabana hai.</p></div>
+      </div>
+    </div>
+
+    <h2>Message Templates</h2>
+    <p>Built-in templates jo aap customize kar sakte hain:</p>
+    <div class="callout urdu">
+      <span class="callout-icon">💬</span>
+      <div>
+        <strong>Appointment Reminder:</strong><br/>
+        "Assalam-o-Alaikum [Patient Name]! Aapki appointment [Clinic Name] mein kal [Date] ko [Time] baje hai. Please time pe tashreef layen. Shukriya."<br/><br/>
+        <strong>Follow-up Reminder:</strong><br/>
+        "Assalam-o-Alaikum [Patient Name]! Aapki follow-up [Date] ko schedule hai. Koi masla ho to is number pe rabta karein."
+      </div>
+    </div>
+
+    <h2>Custom Templates Banana</h2>
+    <p>Communication module mein "Templates" tab mein apne custom messages add kar sakte hain Urdu ya English mein.</p>
+
+    <div class="callout tip">
+      <span class="callout-icon">✅</span>
+      <div>Appointment se seedha bhi reminder bhejna asaan hai — appointment card pe right-click → "Send WhatsApp Reminder".</div>
+    </div>
+
+    <div class="lesson-nav">
+      <button class="btn-nav" onclick="goTo(8)">← Previous</button>
+      <button class="btn-nav next" onclick="goTo(10)">Next: Reports →</button>
+    </div>
+  </div>
+
+  <!-- 10: Reports -->
+  <div class="lesson" id="lesson-10">
+    <div class="lesson-badge">📊 Lesson 10</div>
+    <h1>Reports & Analytics</h1>
+    <p class="subtitle">Clinic ki performance dekhein — revenue, patients, aur trends.</p>
+
+    <h2>Dashboard Stats</h2>
+    <p>Shifa Suite ka home screen (Dashboard) aapko instantly dikhata hai:</p>
+    <ul>
+      <li>📅 <strong>Aaj ki appointments</strong> — total aur done</li>
+      <li>💰 <strong>Aaj ka revenue</strong> — collected payments</li>
+      <li>👥 <strong>Total patients</strong> in database</li>
+      <li>⚠️ <strong>Pending dues</strong> — unpaid invoices</li>
+      <li>📦 <strong>Low stock alerts</strong> — items to reorder</li>
+    </ul>
+
+    <h2>Reports Module</h2>
+    <p>Sidebar mein "Reports" icon pe click karein. Yahan milega:</p>
+
+    <h3>Revenue Report</h3>
+    <ul>
+      <li>Daily / Weekly / Monthly revenue graph</li>
+      <li>Payment method breakdown (Cash / Card / Online)</li>
+      <li>Export to Excel button</li>
+    </ul>
+
+    <h3>Patient Statistics</h3>
+    <ul>
+      <li>New patients per month</li>
+      <li>Return patients (repeat visits)</li>
+      <li>Age aur gender breakdown</li>
+    </ul>
+
+    <h3>Outstanding Dues</h3>
+    <ul>
+      <li>Sare unpaid invoices ki list</li>
+      <li>Patient ka naam, amount, days overdue</li>
+    </ul>
+
+    <h3>Expense Tracker</h3>
+    <ul>
+      <li>Clinic ke expenses add kar sakte hain (rent, salary, utilities)</li>
+      <li>Revenue vs Expenses — monthly profit/loss</li>
+    </ul>
+
+    <h2>Export Karna</h2>
+    <div class="callout tip">
+      <span class="callout-icon">📁</span>
+      <div>Har report ke neeche <strong>"Export Excel"</strong> aur <strong>"Export PDF"</strong> buttons hain. Accountant ko dene ke liye Excel export kafi useful hai.</div>
+    </div>
+
+    <div class="lesson-nav">
+      <button class="btn-nav" onclick="goTo(9)">← Previous</button>
+      <button class="btn-nav next" onclick="goTo(11)">Next: Backup →</button>
+    </div>
+  </div>
+
+  <!-- 11: Backup -->
+  <div class="lesson" id="lesson-11">
+    <div class="lesson-badge">💾 Lesson 11</div>
+    <h1>Data Backup & Restore</h1>
+    <p class="subtitle">Aapka data sirf aapke computer mein hai — iska backup lena bohot zaruri hai.</p>
+
+    <div class="callout warning">
+      <span class="callout-icon">⚠️</span>
+      <div><strong>Important:</strong> Agar computer kharab ho gaya aur backup nahi liya to sara clinic data lose ho sakta hai. Hafte mein ek dafa backup lena acha practice hai.</div>
+    </div>
+
+    <h2>Backup Kaise Lein</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body"><strong>Settings kholein</strong><p>Sidebar ke neeche Settings icon pe click karein.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body"><strong>"Data & Backup" tab select karein</strong></div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body"><strong>"Create Backup" button dabayein</strong><p>Ek file chooser khulega. Jahan save karna chahein wahan save karein.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body"><strong>File USB ya Google Drive mein copy karein</strong><p>Backup file ko ek aur safe jagah copy karein — USB drive ya Google Drive.</p></div>
+      </div>
+    </div>
+
+    <h2>Backup File Kahan Save Karein?</h2>
+    <ul>
+      <li>🔌 <strong>USB Drive</strong> — most reliable, offline copy</li>
+      <li>☁️ <strong>Google Drive</strong> — automatic cloud backup</li>
+      <li>📧 <strong>Email to yourself</strong> — attachment ke tor par</li>
+    </ul>
+
+    <h2>Restore Karna (Data Wapas Laana)</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body"><strong>Settings → Data & Backup kholein</strong></div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body"><strong>"Restore Backup" dabayein</strong><p>Apni backup file select karein.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body"><strong>Confirm karein</strong><p>Warning padh kar OK dabayein — current data replace ho jayega. App restart hogi.</p></div>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <span class="callout-icon">✅</span>
+      <div><strong>Best Practice:</strong> Har Jumme (Friday) ko backup lena ek achi routine hai. Backup file ka naam date se rakhein jaise <code>shifa-backup-2025-01-10.db</code></div>
+    </div>
+
+    <div class="lesson-nav">
+      <button class="btn-nav" onclick="goTo(10)">← Previous</button>
+      <button class="btn-nav next" onclick="goTo(12)">Next: Mobile App →</button>
+    </div>
+  </div>
+
+  <!-- 12: Mobile App -->
+  <div class="lesson" id="lesson-12">
+    <div class="lesson-badge">📱 Lesson 12</div>
+    <h1>Mobile App (Android)</h1>
+    <p class="subtitle">Wohi license key — Android phone pe bhi Shifa Suite use karein.</p>
+
+    <h2>Mobile App Install Karna</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body"><strong>APK file download karein</strong><p>Link se <code>Shifa-Suite-Mobile.apk</code> download karein (Google Drive ya WhatsApp pe milega).</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body"><strong>Unknown Sources allow karein</strong><p>Phone Settings → Security → "Install from Unknown Sources" → ON karein. Yeh ek baar karna hota hai.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body"><strong>APK file pe tap karein</strong><p>Downloaded APK pe tap karein → Install → Open.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body"><strong>License key daalen</strong><p>Wohi key jo laptop pe use ki thi — ek hi key dono pe kaam karti hai.</p></div>
+      </div>
+    </div>
+
+    <h2>Android App Features</h2>
+    <table class="data-table">
+      <thead><tr><th>Screen</th><th>Kya milta hai</th></tr></thead>
+      <tbody>
+        <tr><td>🏠 Dashboard</td><td>Aaj ki appointments, today's revenue, quick stats</td></tr>
+        <tr><td>👥 Patients</td><td>Patient list, search, add new patient</td></tr>
+        <tr><td>📅 Appointments</td><td>Aaj ki queue, add/update appointment, mark done</td></tr>
+        <tr><td>💰 Billing</td><td>Recent invoices read-only (create on desktop)</td></tr>
+        <tr><td>⚙️ Settings</td><td>License info, sync, WhatsApp support</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout info">
+      <span class="callout-icon">🔄</span>
+      <div><strong>Sync:</strong> Mobile app Supabase cloud se data sync karta hai. Laptop pe kiya kaam mobile pe bhi dikh sakta hai jab both connected hon. Settings → Sync Now.</div>
+    </div>
+
+    <h2>Different Android Versions pe Allow Karna</h2>
+    <table class="data-table">
+      <thead><tr><th>Android Version</th><th>Setting ka Rasta</th></tr></thead>
+      <tbody>
+        <tr><td>Android 8-9</td><td>Settings → Security → Unknown Sources</td></tr>
+        <tr><td>Android 10-11</td><td>Settings → Apps → Special App Access → Install Unknown Apps → File Manager → Allow</td></tr>
+        <tr><td>Android 12+</td><td>Jab APK install ho to "Settings" tap karein → Allow from this source</td></tr>
+      </tbody>
+    </table>
+
+    <div class="lesson-nav">
+      <button class="btn-nav" onclick="goTo(11)">← Previous</button>
+      <button class="btn-nav next" onclick="goTo(13)">Next: License →</button>
+    </div>
+  </div>
+
+  <!-- 13: License -->
+  <div class="lesson" id="lesson-13">
+    <div class="lesson-badge">🔑 Lesson 13</div>
+    <h1>License Activation & Renewal</h1>
+    <p class="subtitle">License key activate karna, plans samajhna, aur renewal ka process.</p>
+
+    <h2>License Plans</h2>
+    <table class="data-table">
+      <thead><tr><th>Plan</th><th>Price</th><th>Duration</th><th>Best For</th></tr></thead>
+      <tbody>
+        <tr><td>🎁 Free Trial</td><td>Free</td><td>7 days</td><td>Try karne ke liye</td></tr>
+        <tr><td>📅 Monthly</td><td>Rs. 1,200/month</td><td>1 mahina</td><td>Jo pehle try karna chahein</td></tr>
+        <tr><td>🏆 Lifetime</td><td>Rs. 12,000 (once)</td><td>Forever</td><td>Best value — ek dafa pay, hamesha use</td></tr>
+      </tbody>
+    </table>
+
+    <h2>License Key Activate Karna — Desktop</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body"><strong>Settings kholein</strong><p>Sidebar ke neeche Settings icon.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body"><strong>"License & Subscription" tab select karein</strong></div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body"><strong>License key paste karein</strong><p>WhatsApp pe jo key mili wo copy karke yahan paste karein.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body"><strong>"Activate License" button dabayein</strong><p>Activation bilkul offline hoti hai — internet ki zarurat nahi!</p></div>
+      </div>
+    </div>
+
+    <h2>License Key Activate Karna — Mobile</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body"><strong>App kholein</strong><p>Pehli dafa kholne pe License Key screen aata hai.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body"><strong>Wohi key daalen</strong><p>Laptop waali key copy karke mobile mein paste karein — ek hi key dono pe kaam karti hai.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body"><strong>"Activate & Continue" tap karein</strong></div>
+      </div>
+    </div>
+
+    <h2>License Renew Karna</h2>
+    <p>Monthly plan expire hone pe:</p>
+    <ul>
+      <li>WhatsApp karein: <strong>03109888092</strong></li>
+      <li>Naya payment karein (EasyPaisa / JazzCash / Bank Transfer)</li>
+      <li>Nayi key milegi — Settings mein activate karein</li>
+      <li>Aapka poora data safe rehta hai — kuch delete nahi hota</li>
+    </ul>
+
+    <div class="callout urdu">
+      <span class="callout-icon">🌟</span>
+      <div><strong>Lifetime License recommend ki jati hai:</strong> Rs. 12,000 ek dafa — phir kabhi pay karne ki zarurat nahi. Jo monthly wale hain unhe 10 mahine baad lifetime waala sasta padta hai!</div>
+    </div>
+
+    <h2>Support</h2>
+    <p>Koi bhi masla ho — installation, license, ya app use — directly WhatsApp karein:</p>
+    <div style="background:#e6f4f5;border-radius:12px;padding:20px;text-align:center;margin-top:16px;">
+      <p style="font-size:24px;font-weight:800;color:#0E7C86;margin-bottom:4px;">03109888092</p>
+      <a href="https://wa.me/923109888092?text=Hi%20I%20need%20help%20with%20Shifa%20Suite" target="_blank"
+         style="display:inline-flex;align-items:center;gap:8px;background:#25D366;color:white;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:600;font-size:15px;margin-top:8px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        WhatsApp pe Message Karein
+      </a>
+    </div>
+
+    <div class="lesson-nav">
+      <button class="btn-nav" onclick="goTo(12)">← Previous</button>
+      <button class="btn-nav next" onclick="completeCourse()" style="background:#16a34a;border-color:#16a34a;">🎉 Complete Course!</button>
+    </div>
+  </div>
+
+  <!-- Done Screen -->
+  <div id="done-screen">
+    <div style="text-align:center;padding:60px 40px;">
+      <div style="font-size:80px;margin-bottom:24px;">🎉</div>
+      <h1 style="font-size:32px;font-weight:800;color:#0E7C86;margin-bottom:12px;">Mubarak Ho!</h1>
+      <p style="font-size:18px;color:#6b7280;margin-bottom:32px;line-height:1.7;">Aapne Shifa Suite ka poora training course complete kar liya.<br/>Ab aap apni clinic ko professionally manage kar sakte hain.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;max-width:600px;margin:0 auto 40px;">
+        <div style="background:#e6f4f5;border-radius:12px;padding:20px;text-align:center;">
+          <div style="font-size:32px;margin-bottom:8px;">👥</div>
+          <p style="font-weight:700;color:#0E7C86;">Patients</p><p style="font-size:13px;color:#6b7280;">Records & History</p>
+        </div>
+        <div style="background:#fff0e8;border-radius:12px;padding:20px;text-align:center;">
+          <div style="font-size:32px;margin-bottom:8px;">💰</div>
+          <p style="font-weight:700;color:#F2994A;">Billing</p><p style="font-size:13px;color:#6b7280;">Invoices & Payments</p>
+        </div>
+        <div style="background:#dcfce7;border-radius:12px;padding:20px;text-align:center;">
+          <div style="font-size:32px;margin-bottom:8px;">📱</div>
+          <p style="font-weight:700;color:#16a34a;">Mobile</p><p style="font-size:13px;color:#6b7280;">Same key, any device</p>
+        </div>
+      </div>
+      <a href="https://wa.me/923109888092?text=Hi%20I%20completed%20the%20Shifa%20Suite%20training%20course!" target="_blank"
+         style="display:inline-flex;align-items:center;gap:10px;background:#25D366;color:white;padding:14px 28px;border-radius:12px;text-decoration:none;font-weight:700;font-size:16px;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Course complete! WhatsApp karein 03109888092
+      </a>
+      <p style="margin-top:24px;font-size:13px;color:#d1d5db;">Built by Waseem, Peshawar 🇵🇰</p>
+    </div>
+  </div>
+
+</main>
+</div>
+
+<script>
+const LESSONS = [
+  { title: 'Welcome — Course Introduction', short: 'Introduction' },
+  { title: 'Lesson 1 — Installation & First Launch', short: 'Installation' },
+  { title: 'Lesson 2 — Clinic Setup', short: 'Clinic Setup' },
+  { title: 'Lesson 3 — Patient Management', short: 'Patients' },
+  { title: 'Lesson 4 — Appointments & Scheduling', short: 'Appointments' },
+  { title: 'Lesson 5 — Billing & Invoicing', short: 'Billing' },
+  { title: 'Lesson 6 — E-Prescriptions', short: 'Prescriptions' },
+  { title: 'Lesson 7 — Lab & Diagnostics', short: 'Lab Orders' },
+  { title: 'Lesson 8 — Inventory Management', short: 'Inventory' },
+  { title: 'Lesson 9 — WhatsApp Reminders', short: 'WhatsApp' },
+  { title: 'Lesson 10 — Reports & Analytics', short: 'Reports' },
+  { title: 'Lesson 11 — Data Backup & Restore', short: 'Backup' },
+  { title: 'Lesson 12 — Mobile App (Android)', short: 'Mobile App' },
+  { title: 'Lesson 13 — License Activation', short: 'License' },
+]
+
+let current = 0
+let done = JSON.parse(localStorage.getItem('ss_done') || '[]')
+
+function buildNav() {
+  const nav = document.getElementById('nav-list')
+  nav.innerHTML = ''
+  LESSONS.forEach((l, i) => {
+    const isDone = done.includes(i)
+    const isActive = i === current
+    const btn = document.createElement('button')
+    btn.className = 'nav-item' + (isActive ? ' active' : '') + (isDone ? ' done' : '')
+    btn.innerHTML = `<span class="check">${isDone ? '✓' : ''}</span>${l.short}<span class="nav-num">${i === 0 ? '' : i}</span>`
+    btn.onclick = () => goTo(i)
+    nav.appendChild(btn)
+  })
+}
+
+function updateProgress() {
+  const pct = Math.round((done.length / LESSONS.length) * 100)
+  document.getElementById('progress-fill').style.width = pct + '%'
+  document.getElementById('progress-label').textContent = done.length + ' of ' + LESSONS.length + ' lessons done'
+}
+
+function goTo(idx) {
+  document.querySelectorAll('.lesson').forEach(l => l.classList.remove('active'))
+  document.getElementById('done-screen').classList.remove('active')
+
+  const lesson = document.getElementById('lesson-' + idx)
+  if (lesson) {
+    lesson.classList.add('active')
+    current = idx
+    document.getElementById('current-title').textContent = LESSONS[idx].title
+    const isDone = done.includes(idx)
+    const btn = document.getElementById('mark-btn')
+    btn.textContent = isDone ? '✓ Done!' : '✓ Mark as Done'
+    btn.className = 'btn-mark' + (isDone ? ' done-btn' : '')
+    buildNav()
+    window.scrollTo(0, 0)
+    closeSidebar()
+  }
+}
+
+function markDone() {
+  if (!done.includes(current)) {
+    done.push(current)
+    localStorage.setItem('ss_done', JSON.stringify(done))
+  }
+  const btn = document.getElementById('mark-btn')
+  btn.textContent = '✓ Done!'
+  btn.className = 'btn-mark done-btn'
+  buildNav()
+  updateProgress()
+  if (current < LESSONS.length - 1) {
+    setTimeout(() => goTo(current + 1), 600)
+  }
+}
+
+function completeCourse() {
+  if (!done.includes(current)) {
+    done.push(current)
+    localStorage.setItem('ss_done', JSON.stringify(done))
+  }
+  document.querySelectorAll('.lesson').forEach(l => l.classList.remove('active'))
+  document.getElementById('done-screen').classList.add('active')
+  current = -1
+  buildNav()
+  updateProgress()
+  window.scrollTo(0, 0)
+}
+
+function openSidebar() {
+  document.getElementById('sidebar').classList.add('open')
+  document.getElementById('overlay').classList.add('open')
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open')
+  document.getElementById('overlay').classList.remove('open')
+}
+
+// Init
+buildNav()
+updateProgress()
+goTo(0)
+</script>
+</body>
+</html>
